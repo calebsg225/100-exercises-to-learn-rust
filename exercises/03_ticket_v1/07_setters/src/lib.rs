@@ -64,6 +64,7 @@ impl Ticket {
             panic!("Description cannot be longer than 500 bytes");
         }
         self.description = new_description;
+    }
 
     pub fn set_status(&mut self, new_status: String) {
         let valid_status = vec!["To-Do", "In Progress", "Done"];
