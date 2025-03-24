@@ -11,6 +11,7 @@ use ticket_fields::{TicketDescription, TicketTitle};
 #[derive(Clone)]
 pub struct TicketStore {
     tickets: Vec<Ticket>,
+    count: u64,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -41,11 +42,29 @@ impl TicketStore {
     pub fn new() -> Self {
         Self {
             tickets: Vec::new(),
+            count: 0,
         }
     }
 
-    pub fn add_ticket(&mut self, ticket: Ticket) {
+    pub fn add_ticket(&mut self, ticket_draft: TicketDraft) -> TicketId {
+        let ticket = Ticket {
+            id: TicketId(self.count),
+            title: ticket_draft.title,
+            description: ticket_draft.description,
+            status: Status::ToDo,
+        };
+        self.count += 1;
         self.tickets.push(ticket);
+        TicketId(self.count - 1)
+    }
+
+    pub fn get(&self, id: TicketId) -> Option<&Ticket> {
+        Some(
+            self.tickets
+                .iter()
+                .filter(|t| t.id == id)
+                .collect::<Vec<&Ticket>>()[0],
+        )
     }
 }
 
